@@ -1,0 +1,112 @@
+DATA:
+
+/////////////////Variables Corrección/////////////////////////////////////
+                                                                        //
+  arreglo         -35           //  Arreglo                             //
+                  -35           //                                      //
+                  -30           //                                      //
+                  -29           //                                      //
+                  -28           //                                      //
+                  -26           //                                      //
+                  -16           //                                      //
+                  -5            //                                      //
+                  15            //                                      //
+                  23            //                                      //
+                  26            //                                      //
+                  26            //                                      //
+                  28            //                                      //
+                  31            //                                      //
+                  31            //                                      //
+                  35            //                                      //
+                  40            //                                      //
+                  44            //                                      //
+                  51            //                                      //
+                  55            //                                      //
+                                                                        //
+  largo_arreglo   20            // Largo del Arreglo                    //
+                                                                        //
+  resultado       0             // Aquí deben guardar el resultado      //
+                                                                        //
+//////////////////////////////////////////////////////////////////////////
+
+  amount          0      // Cantidad de apariciones del número actual
+  current         0      // Número actual
+  mode            1      // Cantidad de apariciones de la Moda actual
+  index           0      // Index actual del Arreglo
+
+CODE:
+
+  JMP main
+
+sacar_moda:      // Se guardan valores iniciales en algunas variables
+
+  MOV B,arreglo
+  MOV (index),B
+  MOV A,(B)
+  MOV (current),A
+  MOV A,(largo_arreglo)
+
+read:      // Se revisa si es que ya se recorrió todo el Arreglo
+           // En caso de que aún queden elementos, se revisa el siguiente elemento
+  CMP A,0
+  JEQ end
+  MOV A,(B)
+  MOV B,(current)
+  CMP A,B
+  JNE change_num
+
+check:      // Se cuentan las apariciones del elemento actual para ver si corresponde a una nueva Moda
+
+  MOV A,(amount)
+  ADD A,1
+  MOV (amount),A
+  MOV B,(mode)
+  CMP A,B
+  JEQ update
+  JGT increase
+
+next:      // Se pasa al siguiente índice del Arreglo
+
+  MOV B,(index)
+  INC B
+  MOV (index),B
+  MOV A,(largo_arreglo)
+  SUB A,1
+  MOV (largo_arreglo),A
+  JMP read
+
+change_num:      // Se resetea la cantidad de apariciones al pasar a un nuevo número en el Arreglo
+
+  MOV (current),A
+  MOV A,0
+  MOV (amount),A
+  JMP check
+
+update:      // Se actualiza la Moda con el nuevo número más repetido
+
+  MOV B,(index)
+  MOV A,(B)
+  MOV (resultado),A
+  JMP next
+
+increase:      // Se aumenta la cantidad de apariciones del número que corresponde a la Moda
+
+  MOV (mode),A
+  JMP next
+
+/////////////////Corrección///////////////////////////////////////////////
+                                                                        //
+end: JMP end                    // Fín                                  //
+                                                                        //
+main:                                                                   //
+                                                                        //
+  JMP sacar_moda                //                                      //
+                                                                        //
+  NOP                           // Reservado para Corrección            //
+  NOP                           //                                      //
+  NOP                           //                                      //
+  NOP                           //                                      //
+                                                                        //
+  JMP end                       // Terminar                             //
+                                                                        //
+//////////////////////////////////////////////////////////////////////////

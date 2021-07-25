@@ -1,0 +1,148 @@
+﻿DATA:
+
+/////////////////Variables Corrección/////////////////////////////////////
+                                                                        //
+  arreglo_1       5             //  Arreglo 1                           //
+                  3             //                                      //
+                  -3            //                                      //
+                  2             //                                      //
+                  -7            //                                      //
+                  18            //                                      //
+                  7             //                                      //
+                  -1            //                                      //
+                  20            //                                      //
+                  -30           //                                      //
+                  20            //                                      //
+                  -33           //                                      //
+                  55            //                                      //
+                  -19           //                                      //
+                  60            //                                      //
+                  -18           //                                      //
+                  53            //                                      //
+                  12            //                                      //
+                  5             //                                      //
+                                                                        //
+  largo_arreglo_1 19            // Largo del Arreglo 1                  //
+                                                                        //
+  arreglo_2       52            // Arreglo 2                            //
+                  35            //                                      //
+                  -53           //                                      //
+                  22            //                                      //
+                  -3            //                                      //
+                  23            //                                      //
+                  12            //                                      //
+                  57            //                                      //
+                  21            //                                      //
+                  42            //                                      //
+                  -12           //                                      //
+                  -35           //                                      //
+                  14            //                                      //
+                  -23           //                                      //
+                  23            //                                      //
+                  32            //                                      //
+                                                                        //
+  largo_arreglo_2 16            // Largo del Arreglo 2                  //
+                                                                        //
+//////////////////////////////////////////////////////////////////////////
+
+  index                0      // Index actual del Arreglo
+  length               0      // Largo del Arreglo actual
+  finished             0      // Indica si el Arreglo ya se ordenó por completo
+
+CODE:
+
+  JMP main                     // Iniciar Programa
+
+next:      // Avanza a los siguientes 2 elementos del arreglo
+  
+  MOV A,(length)
+  SUB A,1
+  MOV (length),A
+  MOV B,(index)
+  MOV A,(B)
+  INC B
+  MOV (index),B
+  MOV B,(B)
+  JMP compare
+
+compare:      // Compara 2 elementos del Arreglo
+  
+  CMP A,B
+  JGT swap
+  JMP iteration
+
+swap:      // Intercambia los lugares de 2 elementos seguidos en el Arreglo
+
+  PUSH B
+  MOV B,(index)
+  MOV (B),A
+  POP B
+  MOV A,(index)
+  SUB A,1
+  PUSH A
+  MOV A,B
+  POP B
+  MOV (B),A
+  MOV A,0
+  MOV (finished),A
+  JMP iteration
+
+bubble_sort:      // Algoritmo
+
+  MOV (length),A
+  MOV (index),B
+  PUSH A
+  PUSH B
+  MOV A,1
+  MOV B,(finished)
+  MOV (finished),A
+  MOV A,B
+  CMP A,1            // Si el Arreglo no está completamente ordenado, entonces se realiza una nueva iteración
+  JNE iteration
+  MOV A,0
+  MOV (finished),A
+  POP B
+  POP A
+  RET
+
+iteration:      // Representa una iteración del algoritmo
+
+  MOV A,(length)
+  CMP A,1
+  JNE next
+  POP B
+  POP A
+  JMP bubble_sort
+
+ordenar_arreglo:                // Recibe Largo en A, Puntero en B
+
+  CALL bubble_sort      // Se aplica el algoritmo Bubble Sort
+  RET
+
+/////////////////Corrección///////////////////////////////////////////////
+                                                                        //
+end: JMP end                    // Fín                                  //
+                                                                        //
+main:                           // Llamadas para ordenar Arreglos       //
+                                                                        //
+  MOV A,(largo_arreglo_1)       // Largo del Arreglo 1 en A             //
+  MOV B,arreglo_1               // Puntero al Arreglo 1 en B            //
+  CALL ordenar_arreglo             // Ordenar Arreglo                   //
+                                                                        //
+  MOV A,(largo_arreglo_2)       // Largo del Arreglo 2 en A             //
+  MOV B,arreglo_2               // Puntero al Arreglo 2 en B            //
+  CALL ordenar_arreglo          // Ordenar Arreglo                      //
+                                                                        //
+  NOP                           // Reservado para Corrección            //
+  NOP                           //                                      //
+  NOP                           //                                      //
+  NOP                           //                                      //
+  NOP                           //                                      //
+  NOP                           //                                      //
+  NOP                           //                                      //
+  NOP                           //                                      //
+  NOP                           //                                      //
+                                                                        //
+  JMP end                       // Terminar                             //
+                                                                        //
+//////////////////////////////////////////////////////////////////////////

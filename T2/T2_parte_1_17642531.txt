@@ -1,0 +1,67 @@
+﻿DATA:
+
+/////////////////Variables Corrección/////////////////////////////////////
+                                                                        // 
+  num_1_1         120   // Primer byte del primer número                //
+  num_1_2         34    // Segundo byte del primer número               //
+                                                                        // 
+  num_2_1         0     // Primer byte del segundo número               //
+  num_2_2         255   // Segundo byte del segundo número              //
+                                                                        // 
+  res_a           0     // Parte del resultado si es mayor o igual a 0  //
+  res_b           0     // Parte del resultado si es mayor o igual a 0  //
+                                                                        // 
+  res_c           0     // Parte del resultado si es menor a 0          //
+  res_d           0     // Parte del resultado si es menor a 0          //
+                                                                        // 
+//////////////////////////////////////////////////////////////////////////
+
+CODE:
+
+  JMP main
+
+special_adder:      // Se suman los primeros y segundos bytes por separado
+
+  MOV A,(num_1_1)
+  MOV B,(num_2_1)
+  ADD (res_a)
+  MOV A,(num_1_2)
+  MOV B,(num_2_2)
+  ADD (res_b)
+  JCR add_carry
+  MOV A,(res_a)
+  JMP write
+
+add_carry:      // Se añade el Carry de la suma de los bytes menos significativos a la suma de los más significativos
+
+  MOV A,1
+  ADD A,(res_a)
+  MOV (res_a),A
+
+write:      // Se guardan los resultados en las variables correspondientes
+
+  CMP A,0
+  JGE end
+  MOV B,(res_b)
+  MOV (res_c),A
+  MOV (res_d),B
+  MOV A,0
+  MOV (res_a),A
+  MOV (res_b),A
+
+/////////////////Corrección///////////////////////////////////////////////
+                                                                        //
+end: JMP end                    // Fín                                  //
+                                                                        //
+main:                                                                   //
+                                                                        //
+  JMP special_adder             // Súmar                                //
+                                                                        //
+  NOP                           // Reservado para Corrección            //
+  NOP                           //                                      //
+  NOP                           //                                      //
+  NOP                           //                                      //
+                                                                        //
+  JMP end                       // Terminar                             //
+                                                                        //
+//////////////////////////////////////////////////////////////////////////
